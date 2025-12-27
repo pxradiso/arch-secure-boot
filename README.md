@@ -1,5 +1,5 @@
 # Arch-secure-boot
- Shell script to enable secure boot in Arch Linux
+ Shell script to enable secure boot in Arch Linux (i use arch, btw)
 ## Pre-use steps
  1. Enter your bios, and reset secure boot to setup mode
  2. **DO NOT** enter any other operating system after this. head straight into the nobara boot you want to sign for secure boot
