@@ -6,7 +6,7 @@
 ## Usage
 Clone and cd into this repository with 
 ```bash
-git clone https://github.com/degenerate-kun-69/arch-secure-boot.git/ && cd arch-secure-boot
+git clone https://github.com/pxradiso/arch-secure-boot.git/ && cd arch-secure-boot
 ```
 then run the script as root with 
 
