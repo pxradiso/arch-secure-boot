@@ -8,7 +8,7 @@ fi
 
 echo "=== Downloading sbctl ==="
 pacman -Syu --noconfirm
-pacman -S sbctl --noconfirm
+pacman -S sbctl grub --noconfirm
 
 echo -e "\n=== Checking if sbctl is working ==="
 sbctl status
@@ -39,6 +39,53 @@ fi
 
 echo -e "\n=== Post enrollment status ==="
 sbctl status
+
+echo -e "\n=== Detecting EFI directory ==="
+if mountpoint -q /boot/efi; then
+    EFI_DIR="/boot/efi"
+elif mountpoint -q /efi; then
+    EFI_DIR="/efi"
+elif mountpoint -q /boot; then
+    EFI_DIR="/boot"
+else
+    echo "⚠️ Could not detect EFI mount point. Defaulting to /boot/efi"
+    EFI_DIR="/boot/efi"
+fi
+echo "Using EFI directory: $EFI_DIR"
+
+echo -e "\n⚠️  WARNING: GRUB will be reinstalled with --disable-shim-lock."
+echo "   This is required to fix the shim_lock_verifier_init:177 secure boot error."
+echo "   Your existing GRUB installation will be overwritten."
+read -rp "   Continue? (Y/n): " confirm_grub
+if [[ ! "$confirm_grub" =~ ^[Yy]$ ]]; then
+    echo "Aborted by user."
+    exit 0
+fi
+
+BACKUP_DIR="/root/grub-themes-backup-$(date +%Y%m%d_%H%M%S)"
+if [[ -d /boot/grub/themes ]]; then
+    echo -e "\n=== Backing up GRUB themes to $BACKUP_DIR ==="
+    cp -r /boot/grub/themes "$BACKUP_DIR"
+    echo "✅ Themes backed up to $BACKUP_DIR"
+else
+    echo -e "\n No GRUB themes found, skipping backup."
+fi
+
+echo -e "\n=== Reinstalling GRUB with --disable-shim-lock ==="
+grub-install --target=x86_64-efi \
+    --efi-directory="$EFI_DIR" \
+    --bootloader-id=GRUB \
+    --modules="tpm" \
+    --disable-shim-lock || { echo "❌ grub-install failed. Aborting."; exit 1; }
+
+if [[ -d "$BACKUP_DIR" ]]; then
+    echo -e "\n=== Restoring GRUB themes ==="
+    cp -r "$BACKUP_DIR" /boot/grub/themes
+    echo "✅ Themes restored"
+fi
+
+echo -e "\n=== Regenerating GRUB config ==="
+grub-mkconfig -o /boot/grub/grub.cfg
 
 echo -e "\n=== Signing and verifying EFI binaries ==="
 
@@ -81,5 +128,5 @@ sbctl verify | grep -v "failed to verify file"
 
 echo -e "\n✅ All unsigned EFI binaries and kernels have been signed!"
 echo -e "\n🔒 Now reboot the system and enable Secure Boot in BIOS"
-echo -e "\n❤️ Thanks pxradise (me) for porting it on Arch [https://github.com/pxradiso](https://github.com/pxradiso) and the creator of this script! https://github.com/degenerate-kun-69"
+echo -e "\n❤️ Thanks pxradise (me) for porting it on Arch [https://github.com/pxradiso](https://github.com/pxradise) and the creator of this script! https://github.com/degenerate-kun-69"
 echo -e "\n🌟 Star this repo and the original repo. Thanks!"
