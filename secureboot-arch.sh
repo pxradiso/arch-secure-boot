@@ -55,7 +55,7 @@ echo "Using EFI directory: $EFI_DIR"
 
 echo -e "\n⚠️  WARNING: GRUB will be reinstalled with --disable-shim-lock."
 echo "   This is required to fix the shim_lock_verifier_init:177 secure boot error."
-echo "   Your existing GRUB installation will be overwritten."
+echo "   Your existing GRUB installation will be overwritten. But your grub themes will be saved."
 read -rp "   Continue? (Y/n): " confirm_grub
 if [[ ! "$confirm_grub" =~ ^[Yy]$ ]]; then
     echo "Aborted by user."
