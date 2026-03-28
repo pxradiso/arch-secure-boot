@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 echo "Using sbctl to activate secure boot: https://github.com/Foxboron/sbctl"
+
 if [[ "$EUID" -ne 0 ]]; then
     echo "Run this script in superuser"
     exit 1
