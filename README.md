@@ -3,7 +3,7 @@ Shell script to enable secure boot in Arch Linux (i use arch, btw)
 
 ## Pre-use steps
 1. Enter your BIOS and reset Secure Boot to **Setup Mode**
-2. **DO NOT** enter any other operating system after this — head straight into the Arch installation you want to sign for Secure Boot
+2. **DO NOT** enter any other operating system after this, head straight into the Arch installation you want to sign for Secure Boot.
 
 ## Usage
 Clone and cd into this repository with:
